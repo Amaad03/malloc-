@@ -46,10 +46,15 @@ static void initialize_heap(void) {
 }
 
 void *mymalloc(size_t size, char *file, int line){
-    struct node *current = (struct node *)heap.bytes;
-    if(!initialized) initialize_heap();
+   
+    
+    if(!initialized) {
+        initialize_heap();
+    }
+
     size = (size + 7) & ~7; 
     
+    struct node *current = (struct node *)heap.bytes;
     struct node *res = NULL;
 
     while ((char*) current < heap.bytes + MEMSIZE) {
@@ -100,4 +105,12 @@ void myfree(void *ptr, char *file, int line) {
         // Combine with the next chunk
         header->size += next_header->size;
     }
+    struct node *prev_header = (struct node *)heap.bytes;
+    while ((char *)prev_header + prev_header->size < (char *)header) {
+        prev_header = (struct node *)((char *)prev_header + prev_header->size);
+    }
+    if (prev_header != header && !prev_header->allocated) {
+        prev_header->size += header->size;
+    }
+
 }
