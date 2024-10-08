@@ -4,3 +4,8 @@ Dhruv Patel - dp1138
 Test Plan:
 
 
+gcc -o memtest memtest.c mymalloc.c
+./memtest
+
+gcc -o memgrind memgrind.c mymalloc.c
+./memgrind
