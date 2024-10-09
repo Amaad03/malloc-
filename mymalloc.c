@@ -46,8 +46,6 @@ static void initialize_heap(void) {
 }
 
 void *mymalloc(size_t size, char *file, int line){
-   
-    
     if(!initialized) {
         initialize_heap();
     }
@@ -78,7 +76,6 @@ void *mymalloc(size_t size, char *file, int line){
         return (char *)res + sizeof(struct node); // Return pointer to payload
     }
 
-    // If no block is found, print an error
     fprintf(stderr, "malloc: Unable to allocate %zu bytes (%s:%d)\n", size, file, line);
     return NULL; // Indicate failure
 
