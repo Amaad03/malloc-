@@ -3,14 +3,13 @@
 #include <unistd.h>
 #include "mymalloc.h"
 
-
 struct node {
 int allocated;
 int size;
 };
 
-
 #define MEMSIZE 4096
+
 static union {
 char bytes[MEMSIZE];
 double not_used;
@@ -45,10 +44,8 @@ static void initialize_heap(void) {
 
 }
 
-void *mymalloc(size_t size, char *file, int line){
-    if(!initialized) {
-        initialize_heap();
-    }
+void *mymalloc(size_t size, char *file, int line){    
+    if (!initialized) initialize_heap();
 
     size = (size + 7) & ~7; 
     
@@ -65,41 +62,38 @@ void *mymalloc(size_t size, char *file, int line){
 
     }
     if (res) {
-        // Split the block if it's larger than needed
         if (res->size >= size + sizeof(struct node) + 8) {
             struct node *new_header = (struct node *)((char *)res + sizeof(struct node) + size);
-            new_header->allocated = 0; // New block is free
+            new_header->allocated = 0;
             new_header->size = res->size - (sizeof(struct node) + size);
-            res->size = size + sizeof(struct node); // Update the size of the allocated block
+            res->size = size + sizeof(struct node); 
         }
-        res->allocated = 1; // Mark as allocated
-        return (char *)res + sizeof(struct node); // Return pointer to payload
+        res->allocated = 1; 
+        return (char *)res + sizeof(struct node); 
     }
 
     fprintf(stderr, "malloc: Unable to allocate %zu bytes (%s:%d)\n", size, file, line);
-    return NULL; // Indicate failure
-
+    return NULL; 
 }
 
 void myfree(void *ptr, char *file, int line) {
-    if (!ptr) return; // Check if ptr is NULL
-
-    // Get the header of the chunk
-    struct node *header = (struct node *)((char *)ptr - sizeof(struct node));
-    
-    // Validate pointer: Check if it's within bounds and allocated
-    if ((char *)header < heap.bytes || (char *)header >= heap.bytes + MEMSIZE || !header->allocated) {
-        fprintf(stderr, "free: Inappropriate pointer (%s:%d)\n", file, line);
-        exit(2); // Terminate with an error code
+    if (!ptr) {
+        return; 
     }
 
-    // Mark as free
-    header->allocated = 0;
+    struct node *header = (struct node *)((char *)ptr - sizeof(struct node));
+    
 
-    // Coalesce adjacent free chunks
+    if ((char *)header < heap.bytes || (char *)header >= heap.bytes + MEMSIZE || !header->allocated) {
+        fprintf(stderr, "free: Inappropriate pointer (%s:%d)\n", file, line);
+        exit(2); 
+    }
+
+  
+    header->allocated = 0;
+    
     struct node *next_header = (struct node *)((char *)header + header->size);
     if ((char *)next_header < heap.bytes + MEMSIZE && !next_header->allocated) {
-        // Combine with the next chunk
         header->size += next_header->size;
     }
     struct node *prev_header = (struct node *)heap.bytes;
