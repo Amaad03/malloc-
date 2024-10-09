@@ -2,7 +2,30 @@ Amaad Rajpar - ar1879
 Dhruv Patel - dp1138
 
 Test Plan:
+This project establishes a custom version of the traditional malloc() and free() functions, intergrating error detection along with reporting those errors. 
 
+
+Functionality:
+mymalloc - utilizes a predefined heap in order to find a block of memory that is free which can satisfy the incoming request. It also has further capability to split the block into a smaller chunk
+
+
+
+
+initialize_heap() - a function that defines a inital heap in the event that the heap already hasn't been intialized. It aligns a pointer to the first block in the heap which indicates that block is free. It then sets the size of the block to the MEMSIZE and the global variable intialized is set to 1 which would indicate that the heap is now initialized. 
+
+
+
+Test Cases:
+
+Test Case 4 - allocates and frees with a slight delay
+ - Allocates 1-byte blocks and stores then in an array
+ - Adds a small delay between the allocations in order to simulate processes/work
+ - Frees the allocated blocked from earlier
+
+Test Case 5 - if allocation fails, return specific index of where it failed
+- Attempts to allocate memory for certain number of 1-byte blcosk
+- If there is failure, it outputs the index where the failure happens 
+- Frees all the allocated memory at the end 
 
 gcc -o memtest memtest.c mymalloc.c
 ./memtest
