@@ -102,7 +102,6 @@ void myfree(void *ptr, char *file, int line) {
         exit(2);
     }
 
-    
     header->allocated = 0;
 
     struct node *next_header = (struct node *)((char *)header + header->size);
