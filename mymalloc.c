@@ -11,8 +11,8 @@ int size;
 #define MEMSIZE 4096
 
 static union {
-char bytes[MEMSIZE];
-double not_used;
+    char bytes[MEMSIZE];
+    double not_used;
 } heap;
 
 static int initialized;
@@ -78,30 +78,45 @@ void *mymalloc(size_t size, char *file, int line){
 
 void myfree(void *ptr, char *file, int line) {
     if (!ptr) {
-        return; 
+        fprintf(stderr, "free: Inappropriate pointer (%s:%d)\n", file, line);
+        exit(2);
     }
 
     struct node *header = (struct node *)((char *)ptr - sizeof(struct node));
-    
 
+    // Check if the pointer is at a valid chunk's start
     if ((char *)header < heap.bytes || (char *)header >= heap.bytes + MEMSIZE || !header->allocated) {
         fprintf(stderr, "free: Inappropriate pointer (%s:%d)\n", file, line);
-        exit(2); 
+        exit(2);
     }
 
-  
-    header->allocated = 0;
+    // Check if freeing the pointer is valid
+    if (!header->allocated) {
+        fprintf(stderr, "free: Inappropriate pointer (%s:%d)\n", file, line);
+        exit(2);
+    }
+
+    // Check that the pointer is indeed at the start of the allocated memory
+    if ((char *)ptr != (char *)header + sizeof(struct node)) {
+        fprintf(stderr, "free: Inappropriate pointer (%s:%d)\n", file, line);
+        exit(2);
+    }
+
     
+    header->allocated = 0;
+
     struct node *next_header = (struct node *)((char *)header + header->size);
     if ((char *)next_header < heap.bytes + MEMSIZE && !next_header->allocated) {
-        header->size += next_header->size;
+        header->size += next_header->size;  
     }
+
     struct node *prev_header = (struct node *)heap.bytes;
     while ((char *)prev_header + prev_header->size < (char *)header) {
         prev_header = (struct node *)((char *)prev_header + prev_header->size);
     }
     if (prev_header != header && !prev_header->allocated) {
-        prev_header->size += header->size;
+        prev_header->size += header->size;  
     }
-
 }
+ 
+

@@ -6,13 +6,10 @@ This project establishes a custom version of the traditional malloc() and free()
 
 
 Functionality:
-mymalloc - utilizes a predefined heap in order to find a block of memory that is free which can satisfy the incoming request. It also has further capability to split the block into a smaller chunk
-
-
+mymalloc() - utilizes a predefined heap in order to find a block of memory that is free which can satisfy the incoming request. It also has further capability to split the block into a smaller chunk
 
 
 initialize_heap() - a function that defines a inital heap in the event that the heap already hasn't been intialized. It aligns a pointer to the first block in the heap which indicates that block is free. It then sets the size of the block to the MEMSIZE and the global variable intialized is set to 1 which would indicate that the heap is now initialized. 
-
 
 
 Test Cases:
@@ -27,8 +24,3 @@ Test Case 5 - if allocation fails, return specific index of where it failed
 - If there is failure, it outputs the index where the failure happens 
 - Frees all the allocated memory at the end 
 
-gcc -o memtest memtest.c mymalloc.c
-./memtest
-
-gcc -o memgrind memgrind.c mymalloc.c
-./memgrind

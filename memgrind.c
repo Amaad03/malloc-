@@ -7,7 +7,6 @@
 #define NUM_RUNS 50
 #define NUM_OBJECTS 120
 
-// Function to get the elapsed time in microseconds
 long get_elapsed_time(struct timeval start, struct timeval end) {
     return (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
 }
@@ -16,7 +15,9 @@ long get_elapsed_time(struct timeval start, struct timeval end) {
 void task1() {
     for (int i = 0; i < NUM_OBJECTS; i++) {
         char *ptr = mymalloc(1, __FILE__, __LINE__);
-        myfree(ptr, __FILE__, __LINE__);
+        if (ptr) {
+            myfree(ptr, __FILE__, __LINE__);
+        }
     }
 }
 
@@ -37,20 +38,19 @@ void task3() {
     int count = 0;
 
     while (count < NUM_OBJECTS) {
-        if (rand() % 2 == 0 && count < NUM_OBJECTS) { // Allocate
+        if (rand() % 2 == 0 && count < NUM_OBJECTS) { 
             pointers[count] = mymalloc(1, __FILE__, __LINE__);
             if (pointers[count] != NULL) {
                 count++;
             }
-        } else if (count > 0) { // Deallocate
+        } else if (count > 0) { 
             int index = rand() % count;
             myfree(pointers[index], __FILE__, __LINE__);
-            pointers[index] = pointers[count - 1]; // Move last to freed spot
+            pointers[index] = pointers[count - 1]; 
             count--;
         }
     }
 
-    // Free any remaining objects
     for (int i = 0; i < count; i++) {
         myfree(pointers[i], __FILE__, __LINE__);
     }
@@ -61,10 +61,11 @@ void task4() {
     char *pointers[NUM_OBJECTS];
     for (int i = 0; i < NUM_OBJECTS; i++) {
         pointers[i] = mymalloc(1, __FILE__, __LINE__);
-        usleep(10); // Simulate some work
+        usleep(10); 
     }
     for (int i = 0; i < NUM_OBJECTS; i++) {
         myfree(pointers[i], __FILE__, __LINE__);
+
     }
 }
 
@@ -84,9 +85,8 @@ void task5() {
 
 int main() {
     struct timeval start, end;
-    long total_time = 0; // Initialize total_time
+    long total_time = 0; 
 
-    // Seed random number generator
     srand((unsigned int)time(NULL));
 
     for (int i = 0; i < NUM_RUNS; i++) {
