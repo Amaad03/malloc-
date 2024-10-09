@@ -11,6 +11,9 @@ long get_elapsed_time(struct timeval start, struct timeval end) {
     return (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
 }
 
+void print_task_time(const char *task_name, long microseconds) {
+    printf("%s: %0.6f seconds\n", task_name, microseconds / 1000000.0);
+}
 // Task 1: malloc() and immediately free() a 1-byte object, 120 times
 void task1() {
     for (int i = 0; i < NUM_OBJECTS; i++) {
@@ -85,24 +88,33 @@ void task5() {
 
 int main() {
     struct timeval start, end;
-    long total_time = 0; 
 
     srand((unsigned int)time(NULL));
 
-    for (int i = 0; i < NUM_RUNS; i++) {
-        gettimeofday(&start, NULL);
-        
-        task1();
-        task2();
-        task3();
-        task4();
-        task5();
+    gettimeofday(&start, NULL);
+    task1();
+    gettimeofday(&end, NULL);
+    print_task_time("Task 1", get_elapsed_time(start, end));
 
-        gettimeofday(&end, NULL);
-        total_time += get_elapsed_time(start, end);
-    }
+    gettimeofday(&start, NULL);
+    task2();
+    gettimeofday(&end, NULL);
+    print_task_time("Task 2", get_elapsed_time(start, end));
 
-    printf("Average time for %d runs: %ld microseconds\n", NUM_RUNS, total_time / NUM_RUNS);
-    
+    gettimeofday(&start, NULL);
+    task3();
+    gettimeofday(&end, NULL);
+    print_task_time("Task 3", get_elapsed_time(start, end));
+
+    gettimeofday(&start, NULL);
+    task4();
+    gettimeofday(&end, NULL);
+    print_task_time("Task 4", get_elapsed_time(start, end));
+
+    gettimeofday(&start, NULL);
+    task5();
+    gettimeofday(&end, NULL);
+    print_task_time("Task 5", get_elapsed_time(start, end));
+
     return 0;
 }
