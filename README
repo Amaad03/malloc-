@@ -1,5 +1,4 @@
-Amaad Rajpar - ar1879
-Dhruv Patel - dp1138
+
 
 Test Plan:
 This project establishes a custom version of the traditional malloc() and free() functions, intergrating error detection along with reporting those errors. 
